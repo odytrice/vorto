@@ -1,20 +1,28 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.154.2/containers/go/.devcontainer/base.Dockerfile
+# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.145.1/containers/javascript-node/.devcontainer/base.Dockerfile
 
-# [Choice] Go version: 1, 1.15, 1.14
-ARG VARIANT="1"
-FROM mcr.microsoft.com/vscode/devcontainers/go:0-${VARIANT}
+FROM ubuntu:20.10
 
-# [Option] Install Node.js
-ARG INSTALL_NODE="true"
-ARG NODE_VERSION="lts/*"
-RUN if [ "${INSTALL_NODE}" = "true" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
+# Upgrade Packages
+RUN DEBIAN_FRONTEND=noninteractive \
+  && apt-get -y update \
+  && apt-get -y upgrade
 
-# [Optional] Uncomment this section to install additional OS packages.
-# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
+# Install Pre-Reqs
+RUN apt-get install -y curl wget git \
+  && apt-get install -y apt-utils \
+  && apt-get install -y build-essential \
+  && apt-get install -y libnss3-dev \
+  && apt-get install -y wget gnupg ca-certificates \
+  && apt-get install -y iputils-ping \
+  && apt-get install -y apt-transport-https \
+  && apt-get install -y postgresql-client
 
-# [Optional] Uncomment the next line to use go get to install anything else you need
-# RUN go get -x <your-dependency-or-tool>
+# Install Zsh with af-magic theme
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.1.1/zsh-in-docker.sh)" -- \
+  -t af-magic
 
-# [Optional] Uncomment this line to install global node packages.
-# RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
+# Install Docker Tools
+RUN apt-get install -y docker-compose
+
+# Install dotnet
+RUN apt-get install -y golang
