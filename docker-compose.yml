@@ -1,0 +1,31 @@
+version: "3.6"
+
+services:
+  database:
+    image: postgres:13.1
+    expose:
+      - 5432
+    environment:
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_USER: postgres
+      POSTGRES_DB: vorto
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+      - ./database.sql:/docker-entrypoint-initdb.d/init.sql
+  web:
+    build: .
+    expose:
+      - 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+    - database
+    environment:
+      DB_HOST: database
+      DB_PASSWORD: testpassword
+      DB_USER: postgres
+      DB_DB: vorto
+
+volumes:
+  pgdata:
