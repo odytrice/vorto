@@ -51,7 +51,7 @@ func fetchInvalidDeliveries() ([]Delivery, error) {
 	defer db.Close()
 
 	query := `
-		SELECT DISTINCT d.* from public.delivery d
+		SELECT DISTINCT d.id, d.supplier_id, d.driver_id, d.updated_at, d.created_at from public.delivery d
 		JOIN public.supplier_bean_type sbt
 		ON d.supplier_id = sbt.supplier_id
 		WHERE sbt.bean_type_id
@@ -61,6 +61,7 @@ func fetchInvalidDeliveries() ([]Delivery, error) {
 			ON cbt.carrier_id = dr.carrier_id
 			WHERE dr.Id = d.driver_id
 		)
+		ORDER BY d.id
 	`
 
 	rows, err := db.Query(query)

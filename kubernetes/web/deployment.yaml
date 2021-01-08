@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: web
-        image: odytrice/vorto-web:latest
+        image: odytrice/vorto-web:v1
         env:
           - name: DB_HOST
             value: postgres
