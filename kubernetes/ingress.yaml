@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: vorto-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+  - hosts:
+    - vorto.kubebridge.com
+    secretName: tls-vorto-kubebridge-com
+  rules:
+  - host: vorto.kubebridge.com
+    http:
+      paths:
+      - backend:
+          serviceName: web
+          servicePort: 80

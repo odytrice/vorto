@@ -1,0 +1,19 @@
+
+namespace: vorto
+
+resources:
+  - "database/statefulset.yaml"
+  - "database/service.yaml"
+  - "web/deployment.yaml"
+  - "web/service.yaml"
+  - "ingress.yaml"
+
+configMapGenerator:
+- name: postgres
+  files:
+  - database/init.sql
+
+secretGenerator:
+  - name: postgres
+    literals:
+      - "password=hour-dark-division-remember"

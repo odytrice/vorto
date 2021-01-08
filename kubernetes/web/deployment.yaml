@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: odytrice/vorto-web:latest
+        env:
+          - name: DB_HOST
+            value: postgres
+          - name: DB_USER
+            value: postgres
+          - name: DB_DB
+            value: vorto
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: postgres
+        resources:
+          limits:
+            memory: "100Mi"
+            cpu: "50m"
+        ports:
+        - containerPort: 8085
