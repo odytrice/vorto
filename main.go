@@ -50,8 +50,18 @@ func fetchInvalidDeliveries() ([]Delivery, error) {
 	}
 	defer db.Close()
 
-	//TODO: Write Actual Query
-	query := "SELECT id, supplier_id, driver_id, created_at, updated_at FROM delivery"
+	query := `
+		SELECT DISTINCT d.* from public.delivery d
+		JOIN public.supplier_bean_type sbt
+		ON d.supplier_id = sbt.supplier_id
+		WHERE sbt.bean_type_id
+		NOT IN (
+			SELECT bean_type_id FROM carrier_bean_type cbt
+			JOIN public.driver dr
+			ON cbt.carrier_id = dr.carrier_id
+			WHERE dr.Id = d.driver_id
+		)
+	`
 
 	rows, err := db.Query(query)
 	if err != nil {
